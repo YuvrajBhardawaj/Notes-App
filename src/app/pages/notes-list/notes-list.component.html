@@ -1,0 +1,39 @@
+<div class="flex flex-col gap-4 bg-blue-200 min-w-screen min-h-screen pt-24">
+    <div class="text-center">
+        <button mat-raised-button style="font-size: larger; padding: 30px;" (click)="this.dialogBox=!this.dialogBox;">Click Here To Add New Note</button>
+    </div>
+    
+    <div class="flex flex-wrap justify-start gap-2">
+        @for (item of notes; track $index) {
+            <mat-card class="max-w-md px-3 py-4 min-w-60" appearance="outlined" style="background-color: antiquewhite;">
+                <mat-card-title>
+                    {{item.title}}
+                </mat-card-title>
+                <mat-card-content class="flex-1">
+                    {{item.content}}
+                </mat-card-content>
+                <mat-card-actions align="end" class="mt-2">
+                    <button mat-flat-button style="background-color:rgb(150, 250, 150);" (click)="editContent(notes.indexOf(item))">Edit</button>
+                    <button mat-flat-button style="background-color: rgb(251, 156, 156);" (click)="deleteContent(notes.indexOf(item))">Delete</button>
+                </mat-card-actions>
+            </mat-card>
+        }
+    </div>
+    
+    <div class="fixed bg-white opacity-95 inset-0 min-w-screen min-h-screen flex items-center justify-center" style="z-index: 1000;" *ngIf="dialogBox">
+        <div class="flex flex-col items-center justify-between rounded-lg px-4 py-6 shadow-lg shadow-gray-500 bg-slate-300 ">
+            <mat-form-field style="width: 350px;"> 
+                <mat-label>Title</mat-label>
+                <input matInput [(ngModel)]="title" required/>
+            </mat-form-field>
+            <mat-form-field style="width: 350px;">
+                <mat-label>Content</mat-label>
+                <textarea matInput placeholder="Ex. It makes me feel..." [(ngModel)]="content" required=""></textarea>
+            </mat-form-field>
+            <mat-card-actions align="end" class="flex gap-2">
+                <button mat-button (click)="addContent()" style="background-color:blanchedalmond;">Done</button>
+                <button mat-button (click)="this.dialogBox=!this.dialogBox;" style="background-color: rgb(245, 136, 136);">Close</button>
+            </mat-card-actions>
+        </div>
+    </div>
+</div>
