@@ -2,7 +2,12 @@ import { Component } from '@angular/core';
 import { MaterialModule } from '../../material/material.module';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+import uuid4 from "uuid4";
+interface Note{
+  id: string,
+  title: string,
+  content: string
+}
 @Component({
   selector: 'app-notes-list',
   imports: [MaterialModule, FormsModule],
@@ -10,30 +15,50 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './notes-list.component.css'
 })
 export class NotesListComponent {
+  id:string="";
   title:string="";
   content:string="";
-  notes=[
-    {title:"Angular", content:"Angular is a front end application"},
-    {title:"React JS", content:"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim vitae ducimus magnam id similique cupiditate corporis dolorum inventore. Possimus nulla iste voluptas. Vitae doloribus excepturi consequuntur maiores ullam dicta nam!"},
-  ];
+  loader:boolean=false;
+  notes:Note[]=JSON.parse(localStorage.getItem("notes")||'[]');
   dialogBox:boolean=false;
   addContent(){
+    this.id=uuid4();
     if(this.title==="" && this.content===""){
       alert("Kindly Complete The Given Inputs");
       return;
     }
-    this.notes.push({title:this.title,content:this.content});
+    this.notes.push({id:this.id,title:this.title,content:this.content});
+    this.loader=true;
+    setTimeout(()=>this.loader=false,500);
+    localStorage.setItem("notes",JSON.stringify(this.notes));
+    this.title="";
+    this.content="";
+    this.id="";
+    this.dialogBox=!this.dialogBox;
+  }
+  deleteContent(id:string){
+    this.notes.forEach(element => {
+      if(element.id===id){
+        this.notes.splice(this.notes.indexOf(element),1);
+        this.loader=true;
+        setTimeout(()=>this.loader=false,400);
+        localStorage.setItem("notes",JSON.stringify(this.notes));
+      }
+    });
+  }
+  editContent(id:string){
+    this.notes.forEach(element => {
+      if(element.id===id){
+        this.notes[this.notes.indexOf(element)].title=this.title;
+        this.notes[this.notes.indexOf(element)].content=this.content;
+        this.loader=true;
+        setTimeout(()=>this.loader=false,400);
+        localStorage.setItem("notes",JSON.stringify(this.notes));
+      }
+    });
+    this.id="";
     this.title="";
     this.content="";
     this.dialogBox=!this.dialogBox;
-  }
-  deleteContent(index:number){
-    console.log("Current Index "+index)
-    this.notes.splice(index,1)
-  }
-  editContent(index:number){   //work needed
-    this.dialogBox=!this.dialogBox;
-    this.notes[index].title=this.title;
-    this.notes[index].content=this.content;
   }
 }

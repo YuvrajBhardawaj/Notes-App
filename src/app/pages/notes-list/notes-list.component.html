@@ -1,20 +1,37 @@
-<div class="flex flex-col gap-4 bg-blue-200 min-w-screen min-h-screen pt-24">
+<div class="flex flex-col gap-4 min-w-screen min-h-screen pt-24 bg-gradient-to-br from-purple-100 via-orange-100 to-transparent">
     <div class="text-center">
-        <button mat-raised-button style="font-size: larger; padding: 30px;" (click)="this.dialogBox=!this.dialogBox;">Click Here To Add New Note</button>
+        <button mat-raised-button style="font-size: larger; padding: 30px;" (click)="this.dialogBox=!this.dialogBox;" class="flex items-center gap-3">
+            <span class="material-icons text-lg">
+                add_circle
+            </span>
+            Click Here To Add New Note
+        </button>
     </div>
-    
-    <div class="flex flex-wrap justify-start gap-2">
+    <div class="flex items-center justify-center flex-1" *ngIf="loader">
+        <mat-spinner></mat-spinner>
+    </div>
+    <div class="flex flex-wrap justify-start gap-2 mx-4" *ngIf="!loader">
         @for (item of notes; track $index) {
-            <mat-card class="max-w-md px-3 py-4 min-w-60" appearance="outlined" style="background-color: antiquewhite;">
+            <mat-card class="max-w-md px-6 py-4 min-w-60" appearance="outlined" style="border-radius: 20px; background: rgba(240, 252, 149, 0.25);">
                 <mat-card-title>
                     {{item.title}}
                 </mat-card-title>
                 <mat-card-content class="flex-1">
                     {{item.content}}
                 </mat-card-content>
-                <mat-card-actions align="end" class="mt-2">
-                    <button mat-flat-button style="background-color:rgb(150, 250, 150);" (click)="editContent(notes.indexOf(item))">Edit</button>
-                    <button mat-flat-button style="background-color: rgb(251, 156, 156);" (click)="deleteContent(notes.indexOf(item))">Delete</button>
+                <mat-card-actions align="end" class="mt-2 flex gap-2">
+                    <button mat-flat-button style="background-color:rgb(150, 250, 150);" (click)="this.id=item.id;this.dialogBox=!this.dialogBox;">
+                        <span class="material-icons text-base">
+                            edit
+                        </span>
+                        Edit
+                    </button>
+                    <button mat-flat-button style="background-color: rgb(251, 156, 156);" (click)="deleteContent(item.id)" >
+                        <span class="material-icons text-base">
+                            delete
+                        </span>
+                        Delete
+                    </button>
                 </mat-card-actions>
             </mat-card>
         }
@@ -31,8 +48,18 @@
                 <textarea matInput placeholder="Ex. It makes me feel..." [(ngModel)]="content" required=""></textarea>
             </mat-form-field>
             <mat-card-actions align="end" class="flex gap-2">
-                <button mat-button (click)="addContent()" style="background-color:blanchedalmond;">Done</button>
-                <button mat-button (click)="this.dialogBox=!this.dialogBox;" style="background-color: rgb(245, 136, 136);">Close</button>
+                <button mat-button (click)="this.id.length>0?editContent(this.id):addContent()" style="background-color:blanchedalmond;">
+                    <span class="material-icons text-base font-semibold">
+                        done
+                    </span>
+                    Done
+                </button>
+                <button mat-button (click)="this.dialogBox=!this.dialogBox;" style="background-color: rgb(245, 136, 136);">
+                    <span class="material-icons text-base font-semibold">
+                        clear
+                    </span>
+                    Close
+                </button>
             </mat-card-actions>
         </div>
     </div>
